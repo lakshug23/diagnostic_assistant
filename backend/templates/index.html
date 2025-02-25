@@ -6,107 +6,233 @@
     <title>Medical Diagnostic Assistant</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h2 {
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn {
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        #step2 {
+            display: none;
+        }
+        #filePath {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2 class="text-center">Medical Diagnostic Assistant</h2>
+    <div class="container">
+        <h2>Medical Diagnostic Assistant</h2>
+
+        <!-- Step 1: Input Form -->
         <div id="step1">
             <form id="diagnosisForm">
                 <div class="mb-3">
-                    <label>Age:</label>
+                    <label class="form-label">Patient Name:</label>
+                    <input type="text" id="patientName" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Date of Birth:</label>
+                    <input type="date" id="dob" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Blood Group:</label>
+                    <select id="bloodGroup" class="form-control" required>
+                        <option value="" disabled selected>Select Blood Group</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Age:</label>
                     <input type="number" id="age" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label>Weight (kg):</label>
+                    <label class="form-label">Weight (kg):</label>
                     <input type="number" id="weight" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label>Height (cm):</label>
+                    <label class="form-label">Height (cm):</label>
                     <input type="number" id="height" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label>Symptoms:</label>
+                    <label class="form-label">Symptoms:</label>
                     <input type="text" id="symptoms" class="form-control" placeholder="Enter symptoms, comma-separated" required>
                 </div>
                 <div class="mb-3">
-                    <label for="imageUpload">Upload Medical Image:</label>
+                    <label class="form-label">Upload Medical Image:</label>
                     <input type="file" id="imageUpload" class="form-control" accept="image/*">
+                    <p id="filePath"></p>
                 </div>
-                <p id="filePath"></p>
                 <button type="submit" class="btn btn-primary">Diagnose</button>
             </form>
         </div>
         
-        <div id="step2" class="d-none">
-            <h3>Diagnosis Review</h3>
+        <!-- Step 2: Diagnosis Review -->
+        <div id="step2">
+            <h3 class="text-center">Diagnosis Review</h3>
             <textarea id="diagnosisText" class="form-control" rows="5"></textarea>
-            <button id="saveBtn" class="btn btn-secondary mt-3">Save Changes</button>
-            <button id="printBtn" class="btn btn-success mt-3">Print</button>
+            
+            <div class="btn-container">
+                <button id="saveBtn" class="btn btn-secondary">Save</button>
+                <button id="printBtn" class="btn btn-success">Print</button>
+            </div>
         </div>
     </div>
 
     <script>
         $(document).ready(function() {
+            // Show selected file name
             $('#imageUpload').on('change', function() {
-            let file = this.files[0];
-            if (file) {
-                $('#filePath').text("Selected File: " + file.name);
-            }
-        });
-            
+                let file = this.files[0];
+                if (file) {
+                    $('#filePath').text("Selected File: " + file.name);
+                }
+            });
+
+            // Form submission
             $('#diagnosisForm').on('submit', function(e) {
                 e.preventDefault();
-                let data = {
-                    age: $('#age').val(),
-                    weight: $('#weight').val(),
-                    height: $('#height').val(),
-                    symptoms: $('#symptoms').val().split(',').map(s => s.trim()),
-                    file: $("#imageUpload")[0].files[0]
-                };
-                
+
+                // Validate input fields
+                let patientName = $('#patientName').val();
+                let dob = $('#dob').val();
+                let bloodGroup = $('#bloodGroup').val();
+                let age = $('#age').val();
+                let weight = $('#weight').val();
+                let height = $('#height').val();
+                let symptoms = $('#symptoms').val();
+                let file = $("#imageUpload")[0].files[0];
+
+                if (!patientName || !dob || !bloodGroup || !age || !weight || !height || !symptoms) {
+                    alert("Please fill in all required fields.");
+                    return;
+                }
+
+                let formData = new FormData();
+                formData.append('patientName', patientName);
+                formData.append('dob', dob);
+                formData.append('bloodGroup', bloodGroup);
+                formData.append('age', age);
+                formData.append('weight', weight);
+                formData.append('height', height);
+                formData.append('symptoms', symptoms);
+                if (file) {
+                    formData.append('imageUpload', file);
+                }
+
                 $.ajax({
                     url: '/diagnose',
                     method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
+                    data: formData,
+                    contentType: false,  // Don't set content-type header
+                    processData: false,  // Don't process data (file upload)
                     success: function(response) {
-                        sessionStorage.setItem('diagnosis', response.diagnosis);
-            window.location.href = '/review';
+                        sessionStorage.setItem('formData', JSON.stringify({
+                            patientName: patientName,
+                            dob: dob,
+                            bloodGroup: bloodGroup,
+                            age: age,
+                            weight: weight,
+                            height: height,
+                            symptoms: symptoms,
+                            imageUpload: URL.createObjectURL(file), // Store image URL
+                            diagnosis: response.diagnosis // Store diagnosis
+                        }));
+                        window.location.href = '/review';
                     }
                 });
-
-
-             
-
-        
             });
 
+            // Save Diagnosis
             $('#saveBtn').on('click', function() {
                 let updatedDiagnosis = $('#diagnosisText').val();
-                
                 $.ajax({
                     url: '/review',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ diagnosis: updatedDiagnosis }),
-                    success: function(response) {
+                    success: function() {
                         alert('Diagnosis saved successfully!');
+                    },
+                    error: function() {
+                        alert("Error saving diagnosis. Please try again.");
                     }
                 });
             });
 
+            // Print Diagnosis
             $('#printBtn').on('click', function() {
-    $.ajax({
-        url: '/review',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ diagnosis: $('#diagnosisText').val() }),
-        success: function(response) {
-            window.location.href = '/print';
-        }
-    });
-});
-
+                $.ajax({
+                    url: '/review',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ diagnosis: $('#diagnosisText').val() }),
+                    success: function() {
+                        window.location.href = '/print';
+                    },
+                    error: function() {
+                        alert("Error printing diagnosis.");
+                    }
+                });
+            });
         });
     </script>
 </body>
