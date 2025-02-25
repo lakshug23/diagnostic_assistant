@@ -6,19 +6,176 @@
     <title>Review Diagnosis</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Styling the diagnosis box */
+        .diagnosis-box {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .diagnosis-heading {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .diagnosis-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            white-space: pre-line;
+            color: #555;
+        }
+
+        /* Styling for the image box */
+        .image-box {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .diagnosis-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        /* Button container styling */
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            resize: none;
+            margin-top: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 20px;
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2 class="text-center">Review & Edit Diagnosis</h2>
-        <textarea id="diagnosisText" class="form-control" rows="6">{{ diagnosis }}</textarea>
-        <button id="saveBtn" class="btn btn-primary mt-3">Save Changes</button>
-        <button id="printBtn" class="btn btn-success mt-3">Proceed to Print</button>
+
+    <div class="container">
+        <h2>Review & Edit Diagnosis</h2>
+
+        <!-- Diagnosis Box -->
+        <div class="diagnosis-box">
+            <div class="diagnosis-heading">Diagnosis:</div>
+            <div class="diagnosis-content" id="diagnosisText">
+                Viral fever.
+                <br><br>
+                <strong>Alternatives:</strong> Typhoid fever, Malaria.
+                <br><br>
+                <strong>Recommended tests:</strong> Complete blood count, Blood culture, peripheral blood film for malarial parasite.
+                <br><br>
+                <strong>Suggested medicines:</strong> Paracetamol, plenty of fluids, and rest.
+            </div>
+        </div>
+
+        <!-- Image Box -->
+        <div class="image-box diagnosis-image">
+            <div class="diagnosis-heading">Diagnosis Image:</div>
+            
+        </div>
+
+        <!-- Editable Diagnosis Text -->
+        <div class="diagnosis-box">
+            <div class="diagnosis-heading">Edit Diagnosis:</div>
+            <textarea id="diagnosisTextArea" rows="6">{{ diagnosis }}</textarea>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-container">
+            <button id="saveBtn" class="btn btn-primary">Save Changes</button>
+            <button id="printBtn" class="btn btn-success">Proceed to Print</button>
+        </div>
     </div>
 
     <script>
         $(document).ready(function() {
             $('#saveBtn').on('click', function() {
-                let updatedDiagnosis = $('#diagnosisText').val();
+                let updatedDiagnosis = $('#diagnosisTextArea').val();
 
                 $.ajax({
                     url: '/review',
@@ -36,5 +193,6 @@
             });
         });
     </script>
+
 </body>
 </html>

@@ -85,9 +85,9 @@ def diagnose():
         "diagnosis": diagnosis_data,
         "date": datetime.utcnow()
     }
-    patients_collection.insert_one(patient_record)
+    patient_id = patients_collection.insert_one(patient_record).inserted_id
 
-    return jsonify({"diagnosis": diagnosis_data})
+    return jsonify({"diagnosis": diagnosis_data, "patient_id": str(patient_id)})
 
 @app.route('/review')
 def review():
@@ -97,6 +97,17 @@ def review():
 def get_patients():
     patients = list(patients_collection.find({}, {"_id": 0}))  # Exclude MongoDB's default _id field
     return jsonify({"patients": patients})
+
+@app.route('/print', methods=['POST'])
+def print_prescription():
+    data = request.json
+    patient_id = data.get('patient_id')  # Extract from request data
+    if not patient_id:
+        return jsonify({'error': 'Patient ID is required'}), 400
+    
+    # Process prescription printing logic here
+    return jsonify({'message': f'Prescription for patient {patient_id} printed successfully'})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

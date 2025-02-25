@@ -28,6 +28,11 @@
                     <label>Symptoms:</label>
                     <input type="text" id="symptoms" class="form-control" placeholder="Enter symptoms, comma-separated" required>
                 </div>
+                <div class="mb-3">
+                    <label for="imageUpload">Upload Medical Image:</label>
+                    <input type="file" id="imageUpload" class="form-control" accept="image/*">
+                </div>
+                <p id="filePath"></p>
                 <button type="submit" class="btn btn-primary">Diagnose</button>
             </form>
         </div>
@@ -42,13 +47,21 @@
 
     <script>
         $(document).ready(function() {
+            $('#imageUpload').on('change', function() {
+            let file = this.files[0];
+            if (file) {
+                $('#filePath').text("Selected File: " + file.name);
+            }
+        });
+            
             $('#diagnosisForm').on('submit', function(e) {
                 e.preventDefault();
                 let data = {
                     age: $('#age').val(),
                     weight: $('#weight').val(),
                     height: $('#height').val(),
-                    symptoms: $('#symptoms').val().split(',').map(s => s.trim())
+                    symptoms: $('#symptoms').val().split(',').map(s => s.trim()),
+                    file: $("#imageUpload")[0].files[0]
                 };
                 
                 $.ajax({
@@ -61,6 +74,11 @@
             window.location.href = '/review';
                     }
                 });
+
+
+             
+
+        
             });
 
             $('#saveBtn').on('click', function() {
