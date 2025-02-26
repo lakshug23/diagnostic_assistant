@@ -83,3 +83,6 @@ The Flask server will start at `http://127.0.0.1:5000/`. Open this URL in your b
 
 ### **4. Print Page**  
 ![Print Prescription Page](backend/screenshots/PrintPrescription.png)  
+
+## Demo Video  
+[Click here to watch the demo](backend/assets/demo.mp4)
