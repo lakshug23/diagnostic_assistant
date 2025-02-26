@@ -15,7 +15,7 @@ app.secret_key = "secure_key"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # Configure Google Generative AI
-genai.configure(api_key="AIzaSyA3lru2fpCUn7SXL1EUCJd8juIR-k7xIps")
+genai.configure(api_key="Replace with ur api key")
 
 generation_config = {
     "temperature": 1,
