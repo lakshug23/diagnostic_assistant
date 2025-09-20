@@ -178,8 +178,13 @@
                     formData.append('imageUpload', file);
                 }
 
+                // Show loading state
+                let submitBtn = $('button[type="submit"]');
+                let originalText = submitBtn.text();
+                submitBtn.text('Analyzing...').prop('disabled', true);
+
                 $.ajax({
-                    url: '/diagnose',
+                    url: '/api/diagnose',
                     method: 'POST',
                     data: formData,
                     contentType: false,  // Don't set content-type header
@@ -193,10 +198,25 @@
                             weight: weight,
                             height: height,
                             symptoms: symptoms,
-                            imageUpload: URL.createObjectURL(file), // Store image URL
-                            diagnosis: response.diagnosis // Store diagnosis
+                            imageUpload: file ? URL.createObjectURL(file) : null,
+                            diagnosis: response.diagnosis,
+                            timestamp: response.timestamp
                         }));
                         window.location.href = '/review';
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors
+                        let errorMessage = 'An error occurred during diagnosis.';
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage = xhr.responseJSON.error;
+                            if (xhr.responseJSON.details) {
+                                errorMessage += ': ' + xhr.responseJSON.details.join(', ');
+                            }
+                        }
+                        alert(errorMessage);
+                        
+                        // Reset button
+                        submitBtn.text(originalText).prop('disabled', false);
                     }
                 });
             });
